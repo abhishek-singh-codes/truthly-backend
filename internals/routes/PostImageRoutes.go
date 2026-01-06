@@ -27,5 +27,5 @@ func (p *PostImageRoutes) RegisterRoutes(router *gin.RouterGroup) {
 	postImageGroup := router.Group("/posts")
 
 	// create a new post
-	postImageGroup.POST("/", p.authMiddleware, p.postImageController.PostImage)
+	postImageGroup.POST("", p.authMiddleware, p.postImageController.PostImage)
 }
