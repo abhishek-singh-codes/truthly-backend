@@ -18,6 +18,7 @@ func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, hub 
 	registerAuth(router, db, logger)
 	registerInteraction(router, db, logger, hub)
 	registerWebsocket(router, hub, db, logger)
+	registerUser(router, db, logger)
 }
 
 // post
