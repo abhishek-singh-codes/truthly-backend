@@ -36,9 +36,7 @@ func (h *PostImageController) PostImage(ctx *gin.Context) {
 	resp, err := h.postService.UploadPost(ctx, &postReqDto)
 	if err != nil {
 		h.logger.Error(err.Error())
-		ctx.JSON(500, gin.H{
-			"error": err.Error(),
-		})
+		ctx.JSON(500, resp)
 		return
 	}
 
