@@ -6,9 +6,12 @@ type Hub struct {
 	// clients
 	Clients map[*Client]bool
 	// rooms
+	// room "image123": client1, client2, client3
+	// room "image777": client4, client5
 	RoomsHub map[string]map[*Client]bool
 
 	// register
+	// hub will add it to clients list
 	Register chan *Client
 
 	// unregister
