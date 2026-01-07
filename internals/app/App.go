@@ -2,7 +2,6 @@ package app
 
 import (
 	"log/slog"
-	"truthly/internals/realtime"
 	"truthly/internals/routes"
 	"truthly/internals/util"
 
@@ -41,15 +40,11 @@ func Start(logger *slog.Logger) {
 		})
 	})
 
-	// hub
-	hub := realtime.NewHub()
-	go hub.Run()
-
 	// versioned API
 	api := router.Group("/api/v1")
 
 	// register all routes
-	routes.RegisterAll(api, db, logger, hub)
+	routes.RegisterAll(api, db, logger)
 
 	logger.Info("Server started at :8181")
 	router.Run(":8181")

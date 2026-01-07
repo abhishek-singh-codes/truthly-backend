@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"log/slog"
-	"truthly/internals/realtime"
 	"truthly/internals/repository"
 )
 
@@ -13,18 +12,16 @@ type InteractionService interface {
 }
 
 type interactionService struct {
-	hub             *realtime.Hub
 	logger          *slog.Logger
 	interactionRepo repository.InteractionRepository
 	analyticsRepo   repository.AnalyticRepository
 }
 
-func GetNewInteractionService(logger *slog.Logger, ir repository.InteractionRepository, analyticRepo repository.AnalyticRepository, hub *realtime.Hub) InteractionService {
+func GetNewInteractionService(logger *slog.Logger, ir repository.InteractionRepository, analyticRepo repository.AnalyticRepository) InteractionService {
 	return &interactionService{
 		logger:          logger,
 		interactionRepo: ir,
-		analyticsRepo: analyticRepo,
-		hub: hub,
+		analyticsRepo:   analyticRepo,
 	}
 }
 
@@ -37,19 +34,10 @@ func (s *interactionService) LikeImage(ctx context.Context, userId, imageId stri
 	}
 
 	// 2. read updated count
-	analytic, err := s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
+	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
 	if err != nil {
 		s.logger.Error(err.Error())
 		return err
-	}
-
-	// 3. send the updated like to websocket clients
-	s.hub.Broadcast <- realtime.Event{
-		Type:   "Like_Updated",
-		RoomId: imageId,
-		Payload: map[string]int{
-			"likeCount": analytic.Like,
-		},
 	}
 
 	return nil
@@ -65,18 +53,10 @@ func (s *interactionService) AddComment(ctx context.Context, userId, imageId, te
 	}
 
 	// 2. read comment count
-	analytic, err := s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
+	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
 	if err != nil {
 		s.logger.Error(err.Error())
 		return err
-	}
-
-	s.hub.Broadcast <- realtime.Event{
-		Type:   "Comment_Update",
-		RoomId: imageId,
-		Payload: map[string]int{
-			"CommentCount": analytic.Comment,
-		},
 	}
 
 	return nil

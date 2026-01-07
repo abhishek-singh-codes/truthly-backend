@@ -3,7 +3,6 @@ package routes
 import (
 	"log/slog"
 	"truthly/internals/controller"
-	"truthly/internals/realtime"
 	"truthly/internals/repository"
 	"truthly/internals/service"
 	"truthly/internals/util/auth"
@@ -12,12 +11,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, hub *realtime.Hub) {
+func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
 	registerPost(router, db, logger)
 	registerFeed(router, db, logger)
 	registerAuth(router, db, logger)
-	registerInteraction(router, db, logger, hub)
-	registerWebsocket(router, hub, db, logger)
+	registerInteraction(router, db, logger)
 	registerUser(router, db, logger)
 }
 
@@ -92,14 +90,14 @@ func registerAuth(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
 }
 
 // interaction
-func registerInteraction(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, hub *realtime.Hub) {
+func registerInteraction(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
 	// repo required
 	interactionRepo := repository.GetNewInteractionRepository(db, logger)
 	analyticRepo := repository.GetAnalyticRepository(db, logger)
 	userSessionRepo := repository.GetNewUserSessionRepo(logger, db)
 
 	// service required
-	interactionService := service.GetNewInteractionService(logger, interactionRepo, analyticRepo, hub)
+	interactionService := service.GetNewInteractionService(logger, interactionRepo, analyticRepo)
 
 	// auth
 	authToken := auth.GetNewAuthToken(logger, userSessionRepo)
@@ -109,33 +107,6 @@ func registerInteraction(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logg
 
 	// routes
 	GetNewInteractionRoutes(interactionController, authToken).RegisterRoutes(router)
-}
-
-// websocket
-// websocket
-func registerWebsocket(
-	router *gin.RouterGroup,
-	hub *realtime.Hub,
-	db *gorm.DB,
-	logger *slog.Logger,
-) {
-
-	// repo
-	userSessionRepo := repository.GetNewUserSessionRepo(logger, db)
-
-	// auth token
-	authToken := auth.GetNewAuthToken(logger, userSessionRepo)
-
-	// route
-	router.GET("/ws", func(c *gin.Context) {
-		controller.ServeWS(
-			hub,
-			c.Writer,
-			c.Request,
-			authToken,
-			logger,
-		)
-	})
 }
 
 // user
