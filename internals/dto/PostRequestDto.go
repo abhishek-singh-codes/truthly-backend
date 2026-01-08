@@ -3,9 +3,6 @@ package dto
 import "mime/multipart"
 
 type PostRequestDto struct {
-	// User
-	UserId string `form:"userId"`
-
 	// Description
 	Description string `form:"description"`
 	Country     string `form:"country"`

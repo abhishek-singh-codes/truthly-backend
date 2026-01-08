@@ -11,7 +11,7 @@ import (
 )
 
 type PostService interface {
-	UploadPost(ctx context.Context, postReq *dto.PostRequestDto) (*dto.ResponseDto[any], error)
+	UploadPost(ctx context.Context, postReq *dto.PostRequestDto, userId string) (*dto.ResponseDto[any], error)
 }
 
 type postService struct {
@@ -41,8 +41,8 @@ func GetPostService(
 	}
 }
 
-func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDto) (*dto.ResponseDto[any], error) {
-	s.logger.Info("Uploading image...", "userId", postReq.UserId)
+func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDto, userId string) (*dto.ResponseDto[any], error) {
+	s.logger.Info("Uploading image...", "userId", userId)
 
 	// 1. validate file
 	if postReq.FileHeader == nil {
@@ -74,7 +74,7 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 	//2. Insert row in Image table
 	img := &model.Image{
 		ImageUrl: imgUrl,
-		UserId:   postReq.UserId,
+		UserId:   userId,
 	}
 
 	imgRes, err := s.imageRepo.InsertNewImage(ctx, img)

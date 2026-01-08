@@ -22,6 +22,7 @@ func GetNewPostImageController(logger *slog.Logger, postService service.PostServ
 }
 
 func (h *PostImageController) PostImage(ctx *gin.Context) {
+	userId := ctx.GetString("userId")
 	// 1. Read values from dto
 	var postReqDto dto.PostRequestDto
 	if err := ctx.ShouldBind(&postReqDto); err != nil {
@@ -33,7 +34,7 @@ func (h *PostImageController) PostImage(ctx *gin.Context) {
 	}
 
 	// 2. Call the service layer
-	resp, err := h.postService.UploadPost(ctx, &postReqDto)
+	resp, err := h.postService.UploadPost(ctx, &postReqDto, userId)
 	if err != nil {
 		h.logger.Error(err.Error())
 		ctx.JSON(500, resp)
