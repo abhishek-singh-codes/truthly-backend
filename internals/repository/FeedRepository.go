@@ -28,6 +28,9 @@ type feedRow struct {
 	LikeCount    string
 	CommentCount string
 	ShareCount   string
+
+	IsLike    bool
+	IsComment bool
 }
 
 type feedRepository struct {

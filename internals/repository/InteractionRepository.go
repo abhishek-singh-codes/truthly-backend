@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"truthly/internals/model"
 
@@ -26,31 +27,59 @@ func GetNewInteractionRepository(db *gorm.DB, logger *slog.Logger) InteractionRe
 	}
 }
 
+// helper function increase the like
+func (r *interactionRepository) incrementLikeCount(tx *gorm.DB, imageId string) error {
+	return tx.
+		Model(&model.Analytic{}).
+		Where("ImageId=?", imageId).
+		UpdateColumn("LikeCount", gorm.Expr("LikeCount + ?", 1)).Error
+}
+
 func (r *interactionRepository) LikeImage(ctx context.Context, userId, imageId string) error {
 	return r.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		//1. find analytics for this image
-		var analytics model.Analytic
+		// 1. check if interaction row already exist
+		var imageActivity model.ImageUserActivity
 
-		err := tx.Where("ImageId = ?", imageId).
-			First(&analytics).Error
+		err := tx.
+			Where("UserID=? AND ImageID=?", userId, imageId).
+			First(&imageActivity).Error
+
+		// Case now row exist than create a row and set true
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+
+			newImageUserActivity := model.ImageUserActivity{
+				UserId:  userId,
+				ImageId: imageId,
+				IsLike:  true,
+			}
+
+			if err := tx.Create(&newImageUserActivity).Error; err != nil {
+				return err
+			}
+
+			return r.incrementLikeCount(tx, imageId)
+		}
 
 		if err != nil {
-			r.logger.Error("analytics not found", "imageId", imageId)
 			return err
 		}
 
-		// 2. atomic increment
-		err = tx.
-			Model(&model.Analytic{}).
-			Where("AnalyticId = ?", analytics.AnalyticId).
-			UpdateColumn("LikeCount", gorm.Expr("LikeCount + ?", 1)).Error
-
-		if err != nil {
-			r.logger.Error("Error in increasing the like count", "error", err.Error())
-			return err
+		// row exist and likes
+		if imageActivity.IsLike {
+			return nil
 		}
 
-		return nil
+		/* if row already exists but IsLike = false ,
+		   Lets say you have previously lik -> unlike -> Now again like
+		*/
+
+		if err := tx.
+			Model(&model.ImageUserActivity{}).
+			Where("ID", imageActivity.ID).
+			Update("IsLike", true).Error; err != nil {
+			return err
+		}
+		return r.incrementLikeCount(tx, imageId)
 	})
 }
 
