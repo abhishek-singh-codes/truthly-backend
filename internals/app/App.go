@@ -27,7 +27,7 @@ func Start(logger *slog.Logger) {
 		AllowOrigins: []string{
 			"http://localhost:3000", "http://127.0.0.1/*",
 		},
-		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "OPTIONS", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization", "Origin"},
 		AllowCredentials: true,
 	}))

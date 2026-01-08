@@ -122,3 +122,39 @@ func (c *InteractionController) AddComment(ctx *gin.Context) {
 		"message": "comment added",
 	})
 }
+
+// DELETE /api/v1/interactions/images/:imageId/like
+func (c *InteractionController) UnlikeImage(ctx *gin.Context) {
+
+	// 1. imageId
+	imageId := ctx.Param("imageId")
+	if imageId == "" {
+		ctx.JSON(400, gin.H{"error": "imageId is required"})
+		return
+	}
+
+	// 2. userId
+	userId := ctx.GetString("userId")
+	if userId == "" {
+		ctx.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	// 3. service call
+	err := c.interactionService.UnlikeImage(
+		ctx.Request.Context(),
+		userId,
+		imageId,
+	)
+	if err != nil {
+		c.logger.Error("failed to unlike image", "error", err)
+		ctx.JSON(500, gin.H{"error": "failed to unlike image"})
+		return
+	}
+
+	// 4. success
+	ctx.JSON(200, gin.H{
+		"status":  "success",
+		"message": "image unliked",
+	})
+}

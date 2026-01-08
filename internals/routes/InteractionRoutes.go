@@ -29,6 +29,9 @@ func (i *InteractionRoutes) RegisterRoutes(router *gin.RouterGroup) {
 	// for like the image
 	interactionImage.POST("/:imageId/like", i.authMiddleware, i.interactionController.LikeImage)
 
+	// for unlike the image
+	interactionImage.DELETE("/:imageId/like", i.authMiddleware, i.interactionController.UnlikeImage)
+
 	// for comment the image
 	interactionImage.POST("/:imageId/comment", i.authMiddleware, i.interactionController.AddComment)
 }

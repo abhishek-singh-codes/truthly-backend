@@ -13,6 +13,11 @@ type InteractionRepository interface {
 	// to incrase the like on image
 	LikeImage(ctx context.Context, userId, imageId string) error
 	AddComment(ctx context.Context, userId, imageId, text string) error
+	UnlikeImage(
+		ctx context.Context,
+		userId string,
+		imageId string,
+	) error
 }
 
 type interactionRepository struct {
@@ -33,6 +38,17 @@ func (r *interactionRepository) incrementLikeCount(tx *gorm.DB, imageId string) 
 		Model(&model.Analytic{}).
 		Where("ImageId=?", imageId).
 		UpdateColumn("LikeCount", gorm.Expr("LikeCount + ?", 1)).Error
+}
+
+func (r *interactionRepository) decrementLikeCount(
+	tx *gorm.DB,
+	imageId string,
+) error {
+
+	return tx.
+		Model(&model.Analytic{}).
+		Where("ImageID = ? AND LikeCount > 0", imageId).
+		UpdateColumn("LikeCount", gorm.Expr("LikeCount - 1")).Error
 }
 
 func (r *interactionRepository) LikeImage(ctx context.Context, userId, imageId string) error {
@@ -80,6 +96,48 @@ func (r *interactionRepository) LikeImage(ctx context.Context, userId, imageId s
 			return err
 		}
 		return r.incrementLikeCount(tx, imageId)
+	})
+}
+
+func (r *interactionRepository) UnlikeImage(
+	ctx context.Context,
+	userId string,
+	imageId string,
+) error {
+
+	return r.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+
+		// 1. find interaction row
+		var imageActivity model.ImageUserActivity
+
+		err := tx.
+			Where("UserID=? AND ImageID=?", userId, imageId).
+			First(&imageActivity).Error
+
+		// Case 1: no record → already unliked
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		// Case 2: already unliked
+		if !imageActivity.IsLike {
+			return nil
+		}
+
+		// Case 3: set IsLike = false
+		if err := tx.
+			Model(&model.ImageUserActivity{}).
+			Where("ID", imageActivity.ID).
+			Update("IsLike", false).Error; err != nil {
+			return err
+		}
+
+		// 4. decrement like count
+		return r.decrementLikeCount(tx, imageId)
 	})
 }
 

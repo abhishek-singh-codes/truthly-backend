@@ -9,6 +9,12 @@ import (
 type InteractionService interface {
 	LikeImage(ctx context.Context, userId, imageId string) error
 	AddComment(ctx context.Context, userId, imageID, text string) error
+
+	UnlikeImage(
+		ctx context.Context,
+		userId string,
+		imageId string,
+	) error
 }
 
 type interactionService struct {
@@ -33,7 +39,30 @@ func (s *interactionService) LikeImage(ctx context.Context, userId, imageId stri
 		return err
 	}
 
-	// 2. read updated count
+	// 2. read updated count not used now
+	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
+	if err != nil {
+		s.logger.Error(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (s *interactionService) UnlikeImage(
+	ctx context.Context,
+	userId string,
+	imageId string,
+) error {
+
+	// 1. update db (remove / disable like)
+	err := s.interactionRepo.UnlikeImage(ctx, userId, imageId)
+	if err != nil {
+		s.logger.Error(err.Error())
+		return err
+	}
+
+	// 2. read updated count (or recalc)
 	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
 	if err != nil {
 		s.logger.Error(err.Error())
