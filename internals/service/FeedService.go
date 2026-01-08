@@ -14,25 +14,25 @@ func mustAtoi(s string) int {
 }
 
 type FeedService interface {
-	GetFeed(ctx context.Context, limit int, cursor string) (*dto.FeedResponseDto, error)
+	GetFeed(ctx context.Context, limit int, cursor string, userId string) (*dto.FeedResponseDto, error)
 }
 
 type feedService struct {
-	feedRepo    repository.FeedRepository
-	logger      *slog.Logger
+	feedRepo repository.FeedRepository
+	logger   *slog.Logger
 }
 
 func GetNewFeedService(fr repository.FeedRepository, l *slog.Logger) FeedService {
 	return &feedService{
-		feedRepo:    fr,
-		logger:      l,
+		feedRepo: fr,
+		logger:   l,
 	}
 }
 
-func (fs *feedService) GetFeed(ctx context.Context, limit int, cursor string) (*dto.FeedResponseDto, error) {
+func (fs *feedService) GetFeed(ctx context.Context, limit int, cursor string, userId string) (*dto.FeedResponseDto, error) {
 
 	//1. Get FeedRows [{imageId: xyz}, {imageId: abc},]
-	rows, nextCursor, hasMore, err := fs.feedRepo.GetFeedItems(ctx, limit, cursor)
+	rows, nextCursor, hasMore, err := fs.feedRepo.GetFeedItems(ctx, limit, cursor, userId)
 	if err != nil {
 		fs.logger.Error(err.Error())
 		return nil, err
@@ -63,9 +63,11 @@ func (fs *feedService) GetFeed(ctx context.Context, limit int, cursor string) (*
 				Country: r.Country,
 			},
 			Analytics: dto.AnalyticsDto{
-				Like:    mustAtoi(r.LikeCount),
-				Comment: mustAtoi(r.CommentCount),
-				Share:   mustAtoi(r.ShareCount),
+				Like:      mustAtoi(r.LikeCount),
+				Comment:   mustAtoi(r.CommentCount),
+				Share:     mustAtoi(r.ShareCount),
+				IsLike:    r.IsLike,
+				IsComment: r.IsComment,
 			},
 		})
 	}

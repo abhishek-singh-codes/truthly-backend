@@ -27,9 +27,11 @@ type LocationDto struct {
 }
 
 type AnalyticsDto struct {
-	Like    int `json:"like"`
-	Share   int `json:"share"`
-	Comment int `json:"comment"`
+	Like      int  `json:"like"`
+	Share     int  `json:"share"`
+	Comment   int  `json:"comment"`
+	IsLike    bool `json:"isLike"`
+	IsComment bool `json:"isComment"`
 }
 
 type PaginationDto struct {

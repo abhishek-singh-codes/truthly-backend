@@ -24,8 +24,9 @@ func GetNewFeedController(l *slog.Logger, fs service.FeedService) *FeedControlle
 func (c *FeedController) GetFeed(ctx *gin.Context) {
 	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "10"))
 	cursor := ctx.Query("cursor")
+	userId := ctx.GetString("userId")
 
-	resp, err := c.feedService.GetFeed(ctx, limit, cursor)
+	resp, err := c.feedService.GetFeed(ctx, limit, cursor, userId)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"error": err.Error,

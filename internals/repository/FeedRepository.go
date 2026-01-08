@@ -9,7 +9,7 @@ import (
 )
 
 type FeedRepository interface {
-	GetFeedItems(ctx context.Context, limit int, cursor string) ([]feedRow, string, bool, error)
+	GetFeedItems(ctx context.Context, limit int, cursor string, userId string) ([]feedRow, string, bool, error)
 }
 
 type feedRow struct {
@@ -46,7 +46,7 @@ func GetNewFeedRepository(db *gorm.DB, logger *slog.Logger) FeedRepository {
 }
 
 // return array of feedRow.  [{}, {}, {}, {}....]
-func (fr *feedRepository) GetFeedItems(ctx context.Context, limit int, cursor string) ([]feedRow, string, bool, error) {
+func (fr *feedRepository) GetFeedItems(ctx context.Context, limit int, cursor string, userId string) ([]feedRow, string, bool, error) {
 
 	var rows []feedRow
 
@@ -66,17 +66,20 @@ func (fr *feedRepository) GetFeedItems(ctx context.Context, limit int, cursor st
 				a.ShareCount,
 
 				u.UserId,
-				u.UserName
+				u.UserName,
+                
+                COALESCE(iua.IsLike, false)     AS IsLike,
+				COALESCE(iua.IsComment, false) AS IsComment
 			FROM Images i
 			LEFT JOIN Users u ON u.UserId = i.UserId
 			LEFT JOIN Descriptions d ON d.ImageId = i.ImageId
 			LEFT JOIN Analytics a ON a.ImageId = i.ImageId
+            LEFT JOIN ImageUserActivity iua ON iua.ImageID = i.ImageId AND iua.UserID = ?
 			ORDER BY i.CreatedAt DESC
-			LIMIT ?
-
+            Limit ?;
 	`
 
-	err := fr.Db.WithContext(ctx).Raw(query, limit+1).Scan(&rows).Error
+	err := fr.Db.WithContext(ctx).Raw(query, userId, limit+1).Scan(&rows).Error
 
 	if err != nil {
 		fr.logger.Error(err.Error())
