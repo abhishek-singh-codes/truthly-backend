@@ -75,11 +75,21 @@ func (fr *feedRepository) GetFeedItems(ctx context.Context, limit int, cursor st
 			LEFT JOIN Descriptions d ON d.ImageId = i.ImageId
 			LEFT JOIN Analytics a ON a.ImageId = i.ImageId
             LEFT JOIN ImageUserActivity iua ON iua.ImageID = i.ImageId AND iua.UserID = ?
-			ORDER BY i.CreatedAt DESC
-            Limit ?;
+			WHERE 1=1
 	`
 
-	err := fr.Db.WithContext(ctx).Raw(query, userId, limit+1).Scan(&rows).Error
+	args := []interface{}{userId}
+
+	// If cursor provided, get items older than cursor timestamp
+	if cursor != "" {
+		query += ` AND i.CreatedAt < ?`
+		args = append(args, cursor)
+	}
+
+	query += ` ORDER BY i.CreatedAt DESC LIMIT ?`
+	args = append(args, limit+1)
+
+	err := fr.Db.WithContext(ctx).Raw(query, args...).Scan(&rows).Error
 
 	if err != nil {
 		fr.logger.Error(err.Error())

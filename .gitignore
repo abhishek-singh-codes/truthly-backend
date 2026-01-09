@@ -3,4 +3,5 @@
 logs/app.json
 cmd/main/logs/app.json
 
+cmd/main/.env
 cmd/main/*
