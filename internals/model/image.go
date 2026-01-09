@@ -16,6 +16,10 @@ type Image struct {
 	// s3 bucket image url
 	ImageUrl string `gorm:"column:ImageUrl; not null"`
 
+	// lat long
+	Latitude  float64 `gorm:"column:Latitude; type:decimal(10,8);"`
+	Longitude float64 `gorm:"column:Longitude; type:decimal(11,8);"`
+
 	// dates
 	CreatedAt time.Time `gorm:"column:CreatedAt; autoCreateTime"`
 	UpdatedAt time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`

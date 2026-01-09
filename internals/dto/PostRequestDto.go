@@ -11,4 +11,8 @@ type PostRequestDto struct {
 
 	// Image
 	FileHeader *multipart.FileHeader `form:"fileHeader"`
+
+	// lat long
+	Latitude  float64 `form:"latitude"`
+	Longitude float64 `form:"longitude"`
 }
