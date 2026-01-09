@@ -38,14 +38,6 @@ func (s *interactionService) LikeImage(ctx context.Context, userId, imageId stri
 		s.logger.Error(err.Error())
 		return err
 	}
-
-	// 2. read updated count not used now
-	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
-	if err != nil {
-		s.logger.Error(err.Error())
-		return err
-	}
-
 	return nil
 }
 
@@ -61,14 +53,6 @@ func (s *interactionService) UnlikeImage(
 		s.logger.Error(err.Error())
 		return err
 	}
-
-	// 2. read updated count (or recalc)
-	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
-	if err != nil {
-		s.logger.Error(err.Error())
-		return err
-	}
-
 	return nil
 }
 
@@ -76,13 +60,6 @@ func (s *interactionService) AddComment(ctx context.Context, userId, imageId, te
 
 	// 1. Update in the db
 	err := s.interactionRepo.AddComment(ctx, userId, imageId, text)
-	if err != nil {
-		s.logger.Error(err.Error())
-		return err
-	}
-
-	// 2. read comment count
-	_, err = s.analyticsRepo.GetAnalyticsByImageId(ctx, imageId)
 	if err != nil {
 		s.logger.Error(err.Error())
 		return err
