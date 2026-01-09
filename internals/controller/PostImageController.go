@@ -23,17 +23,36 @@ func GetNewPostImageController(logger *slog.Logger, postService service.PostServ
 
 func (h *PostImageController) PostImage(ctx *gin.Context) {
 	userId := ctx.GetString("userId")
-	// 1. Read values from dto
+
 	var postReqDto dto.PostRequestDto
 	if err := ctx.ShouldBind(&postReqDto); err != nil {
 		h.logger.Error(err.Error())
-		ctx.JSON(400, gin.H{
-			"error": err.Error(),
-		})
+		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	// 2. Call the service layer
+	//  Reverse geocode only if lat/lng present
+	if postReqDto.Latitude != 0 && postReqDto.Longitude != 0 {
+
+		extractor := service.GetNewExtractLocation(h.logger)
+
+		location, err := extractor.FromLatLong(
+			postReqDto.Latitude,
+			postReqDto.Longitude,
+		)
+
+		if err != nil {
+			h.logger.Error(
+				"failed to extract location",
+				"error", err,
+			)
+		} else {
+			postReqDto.City = location.City
+			postReqDto.State = location.State
+			postReqDto.Country = location.Country
+		}
+	}
+
 	resp, err := h.postService.UploadPost(ctx, &postReqDto, userId)
 	if err != nil {
 		h.logger.Error(err.Error())
@@ -41,6 +60,5 @@ func (h *PostImageController) PostImage(ctx *gin.Context) {
 		return
 	}
 
-	// 3. return the response
 	ctx.JSON(200, resp)
 }
