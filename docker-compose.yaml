@@ -1,45 +1,58 @@
-version: "3.9"
+version: "3.8"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: truthly-mysql
+  tile38:
+    image: tile38/tile38:latest
+    container_name: tile38
+    ports:
+      - "9851:9851"
+    restart: unless-stopped
 
-    env_file:
-      - .env
+
+
+
+# version: "3.9"
+
+# services:
+#   mysql:
+#     image: mysql:8.0
+#     container_name: truthly-mysql
+
+#     env_file:
+#       - .env
     
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#     environment:
+#       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#       MYSQL_DATABASE: ${MYSQL_DATABASE}
+#       MYSQL_USER: ${MYSQL_USER}
+#       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
 
-    ports:
-      - "${MYSQL_PORT}:3306"
+#     ports:
+#       - "${MYSQL_PORT}:3306"
 
-    volumes:
-      - F:/Docker/truthly:/var/lib/mysql
+#     volumes:
+#       - F:/Docker/truthly:/var/lib/mysql
 
-    restart: always
+#     restart: always
 
 
-  app:
-    build: .
-    image: truthly-go-app
-    container_name: truthly-app
+#   app:
+#     build: .
+#     image: truthly-go-app
+#     container_name: truthly-app
 
-    ports:
-      - "8181:8181"
+#     ports:
+#       - "8181:8181"
 
-    env_file:
-      - .env
+#     env_file:
+#       - .env
 
-    volumes:
-      - F:/Docker/goapp:/app/logs
+#     volumes:
+#       - F:/Docker/goapp:/app/logs
 
-    depends_on:
-      - mysql
+#     depends_on:
+#       - mysql
 
-    restart: always
+#     restart: always
 
