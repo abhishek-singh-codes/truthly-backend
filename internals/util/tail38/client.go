@@ -19,7 +19,7 @@ type GeoClient interface {
 	) error
 }
 
-// this time I am using Tail38
+// this time I am using redis based geo client
 type geoClient struct {
 	rdb    *redis.Client
 	logger *slog.Logger
