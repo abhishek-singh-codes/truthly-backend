@@ -39,7 +39,7 @@ type reverseGeoResponse struct {
 /*
 Latitude + Longitude → City, State, Country
 */
-func (e *ExtractLocation) FromLatLong(latitude, longitude float64) (*ExtractLocation, error) {
+func (e *ExtractLocation) FromLatLong(latitude, longitude float32) (*ExtractLocation, error) {
 	e.logger.Info(
 		"Extracting location from lat/long",
 		"latitude", latitude,

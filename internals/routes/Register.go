@@ -6,13 +6,14 @@ import (
 	"truthly/internals/repository"
 	"truthly/internals/service"
 	"truthly/internals/util/auth"
+	"truthly/internals/util/tail38"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
-	registerPost(router, db, logger)
+func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, client tail38.GeoClient) {
+	registerPost(router, db, logger, client)
 	registerFeed(router, db, logger)
 	registerAuth(router, db, logger)
 	registerInteraction(router, db, logger)
@@ -20,13 +21,14 @@ func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
 }
 
 // post
-func registerPost(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
+func registerPost(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, client tail38.GeoClient) {
 
 	imageRepo := repository.GetImageRepo(db, logger)
 	descriptionRepo := repository.GetDescriptionRepository(db, logger)
 	analyticsRepo := repository.GetAnalyticRepository(db, logger)
 	commentRepo := repository.GetCommentRepository(db, logger)
 	userSessionRepo := repository.GetNewUserSessionRepo(logger, db)
+	geoRepo := repository.GetNewTail38Repository(client)
 
 	s3Uploader, err := service.NewS3Uploader("truthly-images", logger)
 	if err != nil {
@@ -34,7 +36,7 @@ func registerPost(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
 	}
 
 	postService := service.GetPostService(logger, analyticsRepo, commentRepo,
-		descriptionRepo, imageRepo, s3Uploader,
+		descriptionRepo, imageRepo, s3Uploader, geoRepo,
 	)
 	postImageController := controller.GetNewPostImageController(logger, postService)
 

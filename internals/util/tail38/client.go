@@ -34,7 +34,6 @@ var (
 func InitGeoClient(
 	host string,
 	port int,
-	password string,
 	logger *slog.Logger,
 ) GeoClient {
 	once.Do(func() {
@@ -42,7 +41,6 @@ func InitGeoClient(
 
 		rdb := redis.NewClient(&redis.Options{
 			Addr:         addr,
-			Password:     password,
 			PoolSize:     30,
 			MinIdleConns: 10,
 		})

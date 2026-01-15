@@ -13,6 +13,6 @@ type PostRequestDto struct {
 	FileHeader *multipart.FileHeader `form:"fileHeader"`
 
 	// lat long
-	Latitude  float64 `form:"latitude"`
-	Longitude float64 `form:"longitude"`
+	Latitude  float32 `form:"latitude"`
+	Longitude float32 `form:"longitude"`
 }

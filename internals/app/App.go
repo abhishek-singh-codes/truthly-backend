@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"truthly/internals/routes"
 	"truthly/internals/util"
+	"truthly/internals/util/tail38"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,12 @@ import (
 func Start(logger *slog.Logger) {
 	db := util.InitDb()
 	logger.Info("DB Connected")
+
+	client := tail38.InitGeoClient(
+		"127.0.0.1",
+		9851,
+		logger,
+	)
 
 	sqlDb, err := db.DB()
 	if err != nil {
@@ -44,7 +51,7 @@ func Start(logger *slog.Logger) {
 	api := router.Group("/api/v1")
 
 	// register all routes
-	routes.RegisterAll(api, db, logger)
+	routes.RegisterAll(api, db, logger, client)
 
 	logger.Info("Server started at :8181")
 	router.Run(":8181")

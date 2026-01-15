@@ -21,6 +21,7 @@ type postService struct {
 	descriptionRepo repository.DescriptionRepository
 	imageRepo       repository.ImageRepository
 	s3Uploader      *S3Uploader
+	geoRepository   repository.GeoRepository
 }
 
 func GetPostService(
@@ -30,6 +31,7 @@ func GetPostService(
 	descriptionRepo repository.DescriptionRepository,
 	imageRepo repository.ImageRepository,
 	s3Uploader *S3Uploader,
+	geoRepository repository.GeoRepository,
 ) PostService {
 	return &postService{
 		logger:          logger,
@@ -38,6 +40,7 @@ func GetPostService(
 		descriptionRepo: descriptionRepo,
 		imageRepo:       imageRepo,
 		s3Uploader:      s3Uploader,
+		geoRepository:   geoRepository,
 	}
 }
 
@@ -150,6 +153,28 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 	s.logger.Info("All data (Tables) related to this image are updated succesfully",
 		"imageId", imgRes.ImageId, "url", imgRes.ImageUrl,
 	)
+
+	// call the geo location repo for adding data into tail38
+	if postReq.Latitude != 0 && postReq.Longitude != 0 {
+
+		err := s.geoRepository.SaveImageLocation(
+			ctx,
+			imgRes.ImageId,
+			postReq.Latitude,
+			postReq.Longitude,
+		)
+
+		// this is blocking code
+		if err != nil {
+			s.logger.Error(err.Error())
+			return &dto.ResponseDto[any]{
+				Status:    "failed to set image in tail38",
+				Message:   err.Error(),
+				ResultObj: nil,
+				Error:     err.Error(),
+			}, err
+		}
+	}
 
 	return &dto.ResponseDto[any]{
 		Status:  "success",
