@@ -46,4 +46,6 @@ type GetFeedByRangeDto struct {
 	UserId     string
 	RangeUnit  int
 	Collection string
+	Long       float32
+	Lat        float32
 }
