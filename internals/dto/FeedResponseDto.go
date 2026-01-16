@@ -38,3 +38,12 @@ type PaginationDto struct {
 	NextCursor string `json:"nextCursor,omitempty"`
 	HasMore    bool   `json:"hasMore"`
 }
+
+// Feed by range
+type GetFeedByRangeDto struct {
+	Limit      int
+	Cursor     int
+	UserId     string
+	RangeUnit  int
+	Collection string
+}
