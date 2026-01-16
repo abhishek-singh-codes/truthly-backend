@@ -65,17 +65,14 @@ func (t *geoClient) NearByImages(
 	args := []interface{}{
 		"NEARBY",
 		collection,
+		"LIMIT",
+		limit,
+		"CURSOR",
+		cursor,
 		"POINT",
 		long,
 		lat,
 		meters,
-		"LIMIT",
-		limit,
-	}
-
-	// cursor only if provided
-	if cursor > 0 {
-		args = append(args, "CURSOR", cursor)
 	}
 
 	cmd := t.rdb.Do(ctx, args...)
@@ -88,6 +85,8 @@ func (t *geoClient) NearByImages(
 	if err != nil {
 		return nil, 0, false, err
 	}
+
+	t.logger.Info("Row result from tile38", "rawResult", raw)
 
 	resp, ok := raw.(map[string]interface{})
 	if !ok {
