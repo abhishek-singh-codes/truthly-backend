@@ -44,8 +44,8 @@ type GetFeedByRangeDto struct {
 	Limit      int
 	Cursor     int
 	UserId     string
-	RangeUnit  int
+	Radius     float64
 	Collection string
-	Long       float32
-	Lat        float32
+	Long       float64
+	Lat        float64
 }

@@ -29,9 +29,6 @@ func (fr *FeedRoutes) RegisterRoutes(router *gin.RouterGroup) {
 	// get feed
 	feedGroup.GET("", fr.authMiddleware, fr.feedController.GetFeed)
 
-	// removd authentication in feed
-	//feedGroup.GET("", fr.feedController.GetFeed)
-
-	// get Feed by range
-	//feedGroup.GET("/nearby", fr.authMiddleware, fr.feedController.GetFeedByRange)
+	//get Feed by range
+	feedGroup.GET("/nearby", fr.authMiddleware, fr.feedController.GetFeedByRange)
 }

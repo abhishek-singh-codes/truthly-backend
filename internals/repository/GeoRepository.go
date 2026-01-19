@@ -13,15 +13,14 @@ type GeoRepository interface {
 		lat float64,
 	) error
 
-	// FindImagesByRange(
-	// 	ctx context.Context,
-	// 	collection string,
-	// 	long float32,
-	// 	lat float32,
-	// 	rangeUnit int,
-	// 	limit int,
-	// 	cursor int,
-	// ) ([]string, int, bool, error)
+	NearByImages(
+		ctx context.Context,
+		collection string,
+		long, lat float64,
+		radius float64,
+		userId string,
+		cursor, limit int,
+	) ([]string, int, bool, error)
 }
 
 type tail38GeoRepository struct {
@@ -52,23 +51,17 @@ func (r *tail38GeoRepository) SaveImageLocation(
 	)
 }
 
-// func (r *tail38GeoRepository) FindImagesByRange(
-// 	ctx context.Context,
-// 	collection string,
-// 	long float32,
-// 	lat float32,
-// 	rangeUnit int,
-// 	limit int,
-// 	cursor int,
-// ) ([]string, int, bool, error) {
-
-// 	return r.client.NearByImages(
-// 		ctx,
-// 		collection,
-// 		long,
-// 		lat,
-// 		rangeUnit,
-// 		limit,
-// 		cursor,
-// 	)
-// }
+func (r *tail38GeoRepository) NearByImages(
+	ctx context.Context,
+	collection string,
+	long, lat float64,
+	radius float64,
+	userId string,
+	cursor, limit int,
+) ([]string, int, bool, error) {
+	return r.client.GetNearByImages(
+		ctx, collection,
+		long, lat, radius,
+		userId, cursor, limit,
+	)
+}

@@ -14,7 +14,7 @@ import (
 
 func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, client tail38.GeoClient) {
 	registerPost(router, db, logger, client)
-	registerFeed(router, db, logger)
+	registerFeed(router, db, logger, client)
 	registerAuth(router, db, logger)
 	registerInteraction(router, db, logger)
 	registerUser(router, db, logger)
@@ -48,13 +48,14 @@ func registerPost(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, cli
 
 // feed
 // Get the images in feed section in pagination form
-func registerFeed(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
+func registerFeed(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, client tail38.GeoClient) {
 
 	// repo's
 	// Get feed items [{}, {}]
 	feedRepo := repository.GetNewFeedRepository(db, logger)
+	geoRepo := repository.GetNewTail38Repository(client)
 
-	feedService := service.GetNewFeedService(feedRepo, logger)
+	feedService := service.GetNewFeedService(feedRepo, logger, geoRepo)
 	feedController := controller.GetNewFeedController(logger, feedService)
 
 	// protected routes

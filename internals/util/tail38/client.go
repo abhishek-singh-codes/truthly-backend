@@ -18,15 +18,14 @@ type GeoClient interface {
 		long float64,
 	) error
 
-	// NearByImages(
-	// 	ctx context.Context,
-	// 	collection string,
-	// 	long float32,
-	// 	lat float32,
-	// 	rangeUnit int,
-	// 	limit int,
-	// 	cursor int,
-	// ) ([]string, int, bool, error)
+	GetNearByImages(
+		ctx context.Context,
+		collection string,
+		long, lat float64,
+		radius float64,
+		userId string,
+		cursor, limit int,
+	) ([]string, int, bool, error)
 }
 
 // this time I am using redis based geo client

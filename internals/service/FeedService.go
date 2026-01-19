@@ -47,7 +47,11 @@ func conversion(
 
 type FeedService interface {
 	GetFeed(ctx context.Context, limit int, cursor string, userId string) (*dto.FeedResponseDto, error)
-	//GetFeedByRange(ctx context.Context, reqData *dto.GetFeedByRangeDto, userId string) (*dto.FeedResponseDto, error)
+	GetFeedByRange(
+		ctx context.Context,
+		reqData *dto.GetFeedByRangeDto,
+		userId string,
+	) (*dto.FeedResponseDto, error)
 }
 
 type feedService struct {
@@ -57,10 +61,11 @@ type feedService struct {
 	geoRepository repository.GeoRepository
 }
 
-func GetNewFeedService(fr repository.FeedRepository, l *slog.Logger) FeedService {
+func GetNewFeedService(fr repository.FeedRepository, l *slog.Logger, gr repository.GeoRepository) FeedService {
 	return &feedService{
-		feedRepo: fr,
-		logger:   l,
+		feedRepo:      fr,
+		logger:        l,
+		geoRepository: gr,
 	}
 }
 
@@ -93,48 +98,44 @@ func (fs *feedService) GetFeed(ctx context.Context, limit int, cursor string, us
 	}, nil
 }
 
-// func (fs *feedService) GetFeedByRange(
-// 	ctx context.Context,
-// 	reqData *dto.GetFeedByRangeDto,
-// 	userId string,
-// ) (*dto.FeedResponseDto, error) {
-// 	// 1. Get the imageIds from tile38
-// 	imageIds, nextCursor, hasMore, err := fs.geoRepository.FindImagesByRange(
-// 		ctx,
-// 		reqData.Collection,
-// 		reqData.Long,
-// 		reqData.Lat,
-// 		reqData.RangeUnit,
-// 		reqData.Limit,
-// 		reqData.Cursor,
-// 	)
-// 	if err != nil {
-// 		fs.logger.Error(err.Error())
-// 		return nil, err
-// 	}
+func (fs *feedService) GetFeedByRange(
+	ctx context.Context,
+	reqData *dto.GetFeedByRangeDto,
+	userId string,
+) (*dto.FeedResponseDto, error) {
+	// 1. Get the imageIds from tile38
+	imageIds, nextCursor, hasMore, err := fs.geoRepository.NearByImages(
+		ctx, reqData.Collection,
+		reqData.Long, reqData.Lat, reqData.Radius,
+		reqData.UserId, reqData.Cursor, reqData.Limit,
+	)
+	if err != nil {
+		fs.logger.Error(err.Error())
+		return nil, err
+	}
 
-// 	// 2. Get data from feed Repo
-// 	rows, err := fs.feedRepo.GetFeedItemsByImageIds(
-// 		ctx,
-// 		userId,
-// 		imageIds,
-// 	)
-// 	if err != nil {
-// 		fs.logger.Error("Error in getting geed data by imagedIds", "userId", userId)
-// 		return nil, err
-// 	}
+	// 2. Get data from feed Repo
+	rows, err := fs.feedRepo.GetFeedItemsByImageIds(
+		ctx,
+		userId,
+		imageIds,
+	)
+	if err != nil {
+		fs.logger.Error("Error in getting geed data by imagedIds", "userId", userId)
+		return nil, err
+	}
 
-// 	// convert data into FeedItemsDto
-// 	// call the conversion function
-// 	items := conversion(rows)
+	// convert data into FeedItemsDto
+	// call the conversion function
+	items := conversion(rows)
 
-// 	fs.logger.Info("Feed By range responseded", "cursor", reqData.Cursor, "limit", reqData.Limit)
+	fs.logger.Info("Feed By range responseded", "nextCursor", nextCursor)
 
-// 	return &dto.FeedResponseDto{
-// 		Items: items,
-// 		Pagination: dto.PaginationDto{
-// 			NextCursor: strconv.Itoa(nextCursor),
-// 			HasMore:    hasMore,
-// 		},
-// 	}, nil
-// }
+	return &dto.FeedResponseDto{
+		Items: items,
+		Pagination: dto.PaginationDto{
+			NextCursor: strconv.Itoa(nextCursor),
+			HasMore:    hasMore,
+		},
+	}, nil
+}
