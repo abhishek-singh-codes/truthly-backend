@@ -37,9 +37,11 @@ func (h *PostImageController) PostImage(ctx *gin.Context) {
 		extractor := service.GetNewExtractLocation(h.logger)
 
 		location, err := extractor.FromLatLong(
-			postReqDto.Latitude,
-			postReqDto.Longitude,
+			float32(postReqDto.Longitude),
+			float32(postReqDto.Latitude),
 		)
+
+		h.logger.Info("Check", "location", location)
 
 		if err != nil {
 			h.logger.Error(

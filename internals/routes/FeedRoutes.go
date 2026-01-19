@@ -33,5 +33,5 @@ func (fr *FeedRoutes) RegisterRoutes(router *gin.RouterGroup) {
 	//feedGroup.GET("", fr.feedController.GetFeed)
 
 	// get Feed by range
-	feedGroup.GET("/nearby", fr.authMiddleware, fr.feedController.GetFeedByRange)
+	//feedGroup.GET("/nearby", fr.authMiddleware, fr.feedController.GetFeedByRange)
 }

@@ -42,47 +42,47 @@ func (c *FeedController) GetFeed(ctx *gin.Context) {
 }
 
 // Method for GetFeedByRange, This function will take the data from tile38
-func (c *FeedController) GetFeedByRange(ctx *gin.Context) {
+// func (c *FeedController) GetFeedByRange(ctx *gin.Context) {
 
-	lat, err := strconv.ParseFloat(ctx.Query("lat"), 64)
-	if err != nil {
-		ctx.JSON(400, gin.H{"error": "invalid or missing lat"})
-		return
-	}
+// 	lat, err := strconv.ParseFloat(ctx.Query("lat"), 64)
+// 	if err != nil {
+// 		ctx.JSON(400, gin.H{"error": "invalid or missing lat"})
+// 		return
+// 	}
 
-	long, err := strconv.ParseFloat(ctx.Query("lon"), 64)
-	if err != nil {
-		ctx.JSON(400, gin.H{"error": "invalid or missing lon"})
-		return
-	}
+// 	long, err := strconv.ParseFloat(ctx.Query("lon"), 64)
+// 	if err != nil {
+// 		ctx.JSON(400, gin.H{"error": "invalid or missing lon"})
+// 		return
+// 	}
 
-	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "4"))
-	cursor, _ := strconv.Atoi(ctx.DefaultQuery("cursor", "0"))
-	rangeUnit, _ := strconv.Atoi(ctx.DefaultQuery("rangeUnit", "20"))
+// 	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "4"))
+// 	cursor, _ := strconv.Atoi(ctx.DefaultQuery("cursor", "0"))
+// 	rangeUnit, _ := strconv.Atoi(ctx.DefaultQuery("rangeUnit", "20"))
 
-	userId := ctx.GetString("userId")
+// 	userId := ctx.GetString("userId")
 
-	requestDto := &dto.GetFeedByRangeDto{
-		Limit:      limit,
-		Cursor:     cursor,
-		UserId:     userId,
-		RangeUnit:  rangeUnit,
-		Collection: "images",
-		Long:       float32(long),
-		Lat:        float32(lat),
-	}
+// 	requestDto := &dto.GetFeedByRangeDto{
+// 		Limit:      limit,
+// 		Cursor:     cursor,
+// 		UserId:     userId,
+// 		RangeUnit:  rangeUnit,
+// 		Collection: "images",
+// 		Long:       float32(long),
+// 		Lat:        float32(lat),
+// 	}
 
-	resp, err := c.feedService.GetFeedByRange(ctx, requestDto, userId)
-	if err != nil {
-		ctx.JSON(500, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+// 	resp, err := c.feedService.GetFeedByRange(ctx, requestDto, userId)
+// 	if err != nil {
+// 		ctx.JSON(500, gin.H{
+// 			"error": err.Error(),
+// 		})
+// 		return
+// 	}
 
-	ctx.JSON(200, dto.ResponseDto[any]{
-		Status:    "success",
-		Message:   "Paginated Feed By Range",
-		ResultObj: resp,
-	})
-}
+// 	ctx.JSON(200, dto.ResponseDto[any]{
+// 		Status:    "success",
+// 		Message:   "Paginated Feed By Range",
+// 		ResultObj: resp,
+// 	})
+// }

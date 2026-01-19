@@ -10,13 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 172.18.236.184
 func Start(logger *slog.Logger) {
 	db := util.InitDb()
 	logger.Info("DB Connected")
 
 	client := tail38.InitGeoClient(
-		"127.0.0.1",
-		9851,
+		"172.18.236.184",
+		6379,
 		logger,
 	)
 

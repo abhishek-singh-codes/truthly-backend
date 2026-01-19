@@ -1,11 +1,11 @@
 
 
 services:
-  tile38:
-    image: tile38/tile38:latest
-    container_name: tile38
+   redis:
+    image: redis:7.2
+    container_name: redis
     ports:
-      - "9851:9851"
+      - "6379:6379"
     restart: unless-stopped
 
 

@@ -39,17 +39,17 @@ type reverseGeoResponse struct {
 /*
 Latitude + Longitude → City, State, Country
 */
-func (e *ExtractLocation) FromLatLong(latitude, longitude float32) (*ExtractLocation, error) {
+func (e *ExtractLocation) FromLatLong(longitude, latitude float32) (*ExtractLocation, error) {
 	e.logger.Info(
 		"Extracting location from lat/long",
-		"latitude", latitude,
 		"longitude", longitude,
+		"latitude", latitude,
 	)
 
 	url := fmt.Sprintf(
-		"https://nominatim.openstreetmap.org/reverse?lat=%f&lon=%f&format=json&addressdetails=1",
-		latitude,
+		"https://nominatim.openstreetmap.org/reverse?lon=%f&lat=%f&format=json&addressdetails=1",
 		longitude,
+		latitude,
 	)
 
 	req, err := http.NewRequest("GET", url, nil)

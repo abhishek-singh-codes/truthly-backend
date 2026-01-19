@@ -160,8 +160,8 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 		err := s.geoRepository.SaveImageLocation(
 			ctx,
 			imgRes.ImageId,
-			postReq.Latitude,
 			postReq.Longitude,
+			postReq.Latitude,
 		)
 
 		// this is blocking code

@@ -14,19 +14,19 @@ type GeoClient interface {
 		ctx context.Context,
 		collection string,
 		id string,
-		lat float32,
-		long float32,
+		lat float64,
+		long float64,
 	) error
 
-	NearByImages(
-		ctx context.Context,
-		collection string,
-		long float32,
-		lat float32,
-		rangeUnit int,
-		limit int,
-		cursor int,
-	) ([]string, int, bool, error)
+	// NearByImages(
+	// 	ctx context.Context,
+	// 	collection string,
+	// 	long float32,
+	// 	lat float32,
+	// 	rangeUnit int,
+	// 	limit int,
+	// 	cursor int,
+	// ) ([]string, int, bool, error)
 }
 
 // this time I am using redis based geo client
@@ -54,6 +54,17 @@ func InitGeoClient(
 			PoolSize:     30,
 			MinIdleConns: 10,
 		})
+
+		logger.Warn(
+			"GeoClient connecting",
+			"addr", addr,
+		)
+
+		ctx := context.Background()
+		if err := rdb.Ping(ctx).Err(); err != nil {
+			logger.Error("Redis connection failed", "error", err)
+			panic(err)
+		}
 
 		instance = &geoClient{
 			rdb:    rdb,
