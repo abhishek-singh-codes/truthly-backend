@@ -105,7 +105,7 @@ func (fs *feedService) GetFeedByRange(
 ) (*dto.FeedResponseDto, error) {
 	// 1. Get the imageIds from tile38
 	imageIds, nextCursor, hasMore, err := fs.geoRepository.NearByImages(
-		ctx, reqData.Collection,
+		ctx,
 		reqData.Long, reqData.Lat, reqData.Radius,
 		reqData.UserId, reqData.Cursor, reqData.Limit,
 	)

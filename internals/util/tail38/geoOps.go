@@ -28,6 +28,7 @@ func (t *geoClient) SetPoint(
 		"imageId", id,
 		"lat", lat,
 		"long", long,
+		"collection", collection,
 	)
 
 	if err != nil {
@@ -41,9 +42,7 @@ func (t *geoClient) SetPoint(
 // NearByImages fetches nearby image IDs with pagination
 func (t *geoClient) GetNearByImages(
 	ctx context.Context,
-	collection string,
-	long, lat float64,
-	radius float64,
+	long, lat, radius float64,
 	userId string,
 	cursor, limit int,
 ) ([]string, int, bool, error) {
@@ -51,18 +50,24 @@ func (t *geoClient) GetNearByImages(
 	ctx, cancel := context.WithTimeout(ctx, 800*time.Millisecond)
 	defer cancel()
 
-	key := fmt.Sprintf("nearby:%s", userId)
+	cacheKey := fmt.Sprintf("geo:nearby:%s", userId)
+	sourceKey := "geo:images"
 
-	exists, err := t.rdb.Exists(ctx, key).Result()
+	exists, err := t.rdb.Exists(ctx, cacheKey).Result()
 	if err != nil {
+		t.logger.Error(
+			"cacheKey not exists",
+			"cacheKey", cacheKey,
+			"userId", "userId",
+		)
 		return nil, cursor, false, err
 	}
 
 	if exists == 0 {
 		_, err := t.rdb.GeoSearchStore(
 			ctx,
-			key,
-			collection,
+			sourceKey, // Key--> Data selected from here
+			cacheKey,  // store ---> store here for some period of time
 			&redis.GeoSearchStoreQuery{
 				GeoSearchQuery: redis.GeoSearchQuery{
 					Longitude:  long,
@@ -80,26 +85,19 @@ func (t *geoClient) GetNearByImages(
 			return nil, cursor, false, err
 		}
 
-		_ = t.rdb.Expire(ctx, key, 30*time.Second)
+		_ = t.rdb.Expire(ctx, cacheKey, 30*time.Second)
 	}
 
 	start := int64(cursor)
-	end := int64(cursor + limit)
+	end := start + int64(limit) - 1
 
-	imageIds, err := t.rdb.ZRange(ctx, key, start, end).Result()
+	ids, err := t.rdb.ZRange(ctx, cacheKey, start, end).Result()
 	if err != nil {
 		return nil, cursor, false, err
 	}
 
-	hasMore := false
-	if len(imageIds) > limit {
-		hasMore = true
-		imageIds = imageIds[:limit]
-	}
+	nextCursor := cursor + len(ids)
+	hasMore := len(ids) == limit
 
-	nextCursor := cursor + len(imageIds)
-
-	_ = t.rdb.Expire(ctx, key, 30*time.Second)
-
-	return imageIds, nextCursor, hasMore, nil
+	return ids, nextCursor, hasMore, nil
 }

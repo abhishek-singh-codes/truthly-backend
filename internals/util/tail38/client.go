@@ -20,7 +20,6 @@ type GeoClient interface {
 
 	GetNearByImages(
 		ctx context.Context,
-		collection string,
 		long, lat float64,
 		radius float64,
 		userId string,

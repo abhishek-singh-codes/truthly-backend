@@ -67,7 +67,7 @@ func (c *FeedController) GetFeedByRange(ctx *gin.Context) {
 		Cursor:     cursor,
 		UserId:     userId,
 		Radius:     float64(radius),
-		Collection: "images",
+		Collection: "geo:images",
 		Long:       long,
 		Lat:        lat,
 	}

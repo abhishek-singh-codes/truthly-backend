@@ -15,7 +15,6 @@ type GeoRepository interface {
 
 	NearByImages(
 		ctx context.Context,
-		collection string,
 		long, lat float64,
 		radius float64,
 		userId string,
@@ -44,7 +43,7 @@ func (r *tail38GeoRepository) SaveImageLocation(
 ) error {
 	return r.client.SetPoint(
 		ctx,
-		"images",
+		"geo:images",
 		imageId,
 		long,
 		lat,
@@ -53,14 +52,13 @@ func (r *tail38GeoRepository) SaveImageLocation(
 
 func (r *tail38GeoRepository) NearByImages(
 	ctx context.Context,
-	collection string,
 	long, lat float64,
 	radius float64,
 	userId string,
 	cursor, limit int,
 ) ([]string, int, bool, error) {
 	return r.client.GetNearByImages(
-		ctx, collection,
+		ctx,
 		long, lat, radius,
 		userId, cursor, limit,
 	)
