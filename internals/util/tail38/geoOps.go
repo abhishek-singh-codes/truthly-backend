@@ -63,6 +63,10 @@ func (t *geoClient) GetNearByImages(
 		return nil, cursor, false, err
 	}
 
+	/* cacheKey is a set that will fill when user call the api by distance range,
+	By this I will get the data in cacheKey set. By all the imagesIds, we can get the posts,
+	and cursor will send to frontend and stored in the state in frontend
+	*/
 	if exists == 0 {
 		_, err := t.rdb.GeoSearchStore(
 			ctx,
