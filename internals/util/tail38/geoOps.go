@@ -17,18 +17,18 @@ func (t *geoClient) SetPoint(
 	lat float64,
 ) error {
 
-	t.logger.Info(
-		"Inserting image location into Redis GEO",
-		"imageId", id,
-		"lat", lat,
-		"long", long,
-	)
-
 	err := t.rdb.GeoAdd(ctx, collection, &redis.GeoLocation{
 		Name:      id,
 		Longitude: long,
 		Latitude:  lat,
 	}).Err()
+
+	t.logger.Info(
+		"Inserted image location into Redis GEO",
+		"imageId", id,
+		"lat", lat,
+		"long", long,
+	)
 
 	if err != nil {
 		t.logger.Error("Redis GEOADD failed", "error", err)

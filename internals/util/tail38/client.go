@@ -52,6 +52,7 @@ func InitGeoClient(
 			Addr:         addr,
 			PoolSize:     30,
 			MinIdleConns: 10,
+			DB:           0,
 		})
 
 		logger.Warn(

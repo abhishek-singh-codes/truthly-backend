@@ -50,7 +50,7 @@ func (c *FeedController) GetFeedByRange(ctx *gin.Context) {
 		return
 	}
 
-	long, err := strconv.ParseFloat(ctx.Query("lon"), 64)
+	long, err := strconv.ParseFloat(ctx.Query("long"), 64)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": "invalid or missing lon"})
 		return
@@ -71,6 +71,10 @@ func (c *FeedController) GetFeedByRange(ctx *gin.Context) {
 		Long:       long,
 		Lat:        lat,
 	}
+
+	c.logger.Info("Request data for feed by range",
+		"requestData", requestDto,
+	)
 
 	resp, err := c.feedService.GetFeedByRange(ctx, requestDto, userId)
 	if err != nil {
