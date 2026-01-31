@@ -76,8 +76,10 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 
 	//2. Insert row in Image table
 	img := &model.Image{
-		ImageUrl: imgUrl,
-		UserId:   userId,
+		ImageUrl:  imgUrl,
+		UserId:    userId,
+		Latitude:  postReq.Latitude,
+		Longitude: postReq.Longitude,
 	}
 
 	imgRes, err := s.imageRepo.InsertNewImage(ctx, img)
