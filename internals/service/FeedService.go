@@ -113,6 +113,11 @@ func (fs *feedService) GetFeedByRange(
 		fs.logger.Error(err.Error())
 		return nil, err
 	}
+	fs.logger.Info("Nearby Images from redis cache",
+		"Count", len(imageIds),
+		"userId", userId,
+		"lat", reqData.Lat, "long", reqData.Long,
+	)
 
 	// 2. Get data from feed Repo
 	rows, err := fs.feedRepo.GetFeedItemsByImageIds(
@@ -121,7 +126,7 @@ func (fs *feedService) GetFeedByRange(
 		imageIds,
 	)
 	if err != nil {
-		fs.logger.Error("Error in getting geed data by imagedIds", "userId", userId)
+		fs.logger.Error("Error in getting Feed data by imagedIds", "userId", userId)
 		return nil, err
 	}
 

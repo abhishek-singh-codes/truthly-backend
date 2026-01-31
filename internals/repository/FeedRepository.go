@@ -161,12 +161,11 @@ func (fr *feedRepository) GetFeedItemsByImageIds(
 		LEFT JOIN ImageUserActivity iua 
 		       ON iua.ImageID = i.ImageId AND iua.UserID = ?
 		WHERE i.ImageId IN (?)
-		ORDER BY FIELD(i.ImageId, ?)
 	`
 
 	err := fr.Db.
 		WithContext(ctx).
-		Raw(query, userId, imageIds, imageIds).
+		Raw(query, userId, imageIds).
 		Scan(&rows).
 		Error
 
