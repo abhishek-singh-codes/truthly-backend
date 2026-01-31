@@ -20,12 +20,15 @@ func Start(logger *slog.Logger) {
 		6379,
 		logger,
 	)
+	logger.Info("Geo DB connected")
 
 	sqlDb, err := db.DB()
 	if err != nil {
 		logger.Error(err.Error())
 		return
 	}
+	logger.Info("MySQL DB connected")
+
 	defer sqlDb.Close() // Close db connection when the app is shut down
 
 	router := gin.Default()

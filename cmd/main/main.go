@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"truthly/internals/app"
 	"truthly/internals/util/logger"
 
@@ -8,6 +9,7 @@ import (
 )
 
 func main() {
+	fmt.Println("Application started")
 	log := logger.InitLogger()
 	log.Info("Logger initialized")
 
