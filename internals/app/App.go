@@ -16,7 +16,7 @@ func Start(logger *slog.Logger) {
 	logger.Info("DB Connected")
 
 	client := tail38.InitGeoClient(
-		"127.0.0.1",
+		"172.18.236.184",
 		6379,
 		logger,
 	)
