@@ -89,7 +89,7 @@ func (c *AuthController) UserLogin(ctx *gin.Context) {
 		"/",
 		"",
 		false,
-		true,
+		false,
 	)
 
 	// Add this session in UserSession table

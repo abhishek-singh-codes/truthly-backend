@@ -34,6 +34,7 @@ func GetUserRepo(l *slog.Logger, db *gorm.DB) UserRepository {
 // Insert a new user -> signup
 func (ur *userRepository) CreatNewUser(ctx context.Context, user *model.User) (*model.User, error) {
 	if err := ur.db.WithContext(ctx).Create(user).Error; err != nil {
+		ur.logger.Error(err.Error())
 		return nil, err
 	}
 	return user, nil

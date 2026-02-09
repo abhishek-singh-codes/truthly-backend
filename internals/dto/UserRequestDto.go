@@ -5,18 +5,8 @@ import (
 )
 
 type UserRequestDto struct {
-	FirstName    string `json:"firstName,omitempty"`
-	LastName     string `json:"lastName,omitempty"`
-	UserName     string `json:"userName,omitempty"`
-	Age          int    `json:"age,omitempty"`
-	Gender       string `json:"gender,omitempty"`
-	Country      string `json:"country,omitempty"`
-	State        string `json:"state,omitempty"`
-	City         string `json:"city,omitempty"`
-	Address      string `json:"address,omitempty"`
-	Email        string `json:"email,omitempty"`
-	Password     string `json:"password,omitempty"`
-	MobileNumber string `json:"mobileNumber,omitempty"`
+	UserName string `json:"userName,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
 type UserResponseDto struct {
@@ -38,18 +28,9 @@ type UserDetailsForHome struct {
 
 func ToModel(u *UserRequestDto) *model.User {
 	return &model.User{
-		FirstName:    u.FirstName,
-		LastName:     u.LastName,
-		UserName:     u.UserName,
-		Age:          u.Age,
-		Gender:       u.Gender,
-		Country:      u.Country,
-		State:        u.State,
-		City:         u.City,
-		Address:      u.Address,
-		Email:        u.Email,
-		Password:     u.Password, // later hash this in service
-		MobileNumber: u.MobileNumber,
+
+		UserName: u.UserName,
+		Password: u.Password,
 	}
 }
 
