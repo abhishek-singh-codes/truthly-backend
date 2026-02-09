@@ -62,8 +62,8 @@ func (c *AuthController) UserLogin(ctx *gin.Context) {
 
 	data, err := c.authService.VerifyUser(ctx, &loginReq)
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"Messsage": "Invalid Cardentials",
+		ctx.JSON(400, dto.ResponseDto[any]{
+			Error: err.Error(),
 		})
 		return
 	}
@@ -76,8 +76,8 @@ func (c *AuthController) UserLogin(ctx *gin.Context) {
 	token, sessionId, err := c.authUtil.GenerateJwtToken(loginReq.UserName, data.ResultObj.UserId)
 	if err != nil {
 		c.logger.Error("Error in token generation", "error", err.Error())
-		ctx.JSON(500, gin.H{
-			"error": err.Error(),
+		ctx.JSON(500, dto.ResponseDto[any]{
+			Error: err.Error(),
 		})
 	}
 
