@@ -60,19 +60,20 @@ func (c *AuthController) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	// verify mail and store userId and userName in the
-	data, err := c.authService.VerifyMail(ctx, &loginReq)
+	data, err := c.authService.VerifyUser(ctx, &loginReq)
 	if err != nil {
-		ctx.JSON(404, data)
+		ctx.JSON(400, gin.H{
+			"Messsage": "Invalid Cardentials",
+		})
 		return
 	}
 
 	// set userId and userName in ctx to access it later
 	ctx.Set("userId", data.ResultObj.UserId)
-	ctx.Set("userName", data.ResultObj.UserName)
+	ctx.Set("userName", loginReq.UserName)
 
 	// generate token
-	token, sessionId, err := c.authUtil.GenerateJwtToken(loginReq.Email, data.ResultObj.UserId)
+	token, sessionId, err := c.authUtil.GenerateJwtToken(loginReq.UserName, data.ResultObj.UserId)
 	if err != nil {
 		c.logger.Error("Error in token generation", "error", err.Error())
 		ctx.JSON(500, gin.H{
@@ -92,7 +93,7 @@ func (c *AuthController) UserLogin(ctx *gin.Context) {
 	)
 
 	// Add this session in UserSession table
-	res, err := c.authService.AddSession(ctx, sessionId, data.ResultObj.UserId, data.ResultObj.UserName, token)
+	res, err := c.authService.AddSession(ctx, sessionId, data.ResultObj.UserId, loginReq.UserName, token)
 	if err != nil {
 		ctx.JSON(500, res)
 	}

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"truthly/internals/model"
 
@@ -12,7 +13,7 @@ import (
 type UserRepository interface {
 	// Inser a new user
 	CreatNewUser(ctx context.Context, user *model.User) (*model.User, error)
-	VerifyMail(ctx context.Context, mail string) (*model.User, error)
+	VerifyUser(ctx context.Context, userName string, password string) (string, error)
 
 	GetUserById(ctx context.Context, userId string) (*model.User, error)
 }
@@ -38,25 +39,32 @@ func (ur *userRepository) CreatNewUser(ctx context.Context, user *model.User) (*
 	return user, nil
 }
 
-// validate email
-func (ur *userRepository) VerifyMail(ctx context.Context, email string) (*model.User, error) {
+// validate user
+func (ur *userRepository) VerifyUser(ctx context.Context, userName string, password string) (string, error) {
 
 	var user model.User
 
 	err := ur.db.WithContext(ctx).
-		Where("email = ?", email).
+		Where("UserName = ?", userName).
 		First(&user).Error
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
+			return "", fmt.Errorf("user not found")
 		}
 
 		// actual db error
 		ur.logger.Error(err.Error())
-		return nil, err
+		return "", err
 	}
-	return &user, nil
+
+	// password check
+	if user.Password != password {
+		return "", fmt.Errorf("invalid password")
+	}
+
+	// success → return userId
+	return user.UserId, nil
 }
 
 // Get user details by user id to show on home page

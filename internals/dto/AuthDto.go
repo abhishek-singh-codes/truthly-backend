@@ -1,12 +1,11 @@
 package dto
 
 type LoginReq struct {
-	Email    string `json:"email"`
+	UserName string `json:"userName"`
 	Password string `json:"password"`
 }
 
 type LogInRes struct {
-	UserId   string `json:"userId,omitempty"`
-	UserName string `json:"userName,omitempty"`
-	Token    string `json:"token,omitempty"`
+	UserId string `json:"userId,omitempty"`
+	Token  string `json:"token,omitempty"`
 }

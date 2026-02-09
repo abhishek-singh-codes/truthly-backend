@@ -11,7 +11,7 @@ import (
 
 type AuthService interface {
 	UserSignup(ctx context.Context, user *dto.UserRequestDto) (*dto.ResponseDto[*dto.LogInRes], error)
-	VerifyMail(ctx context.Context, loginReq *dto.LoginReq) (*dto.ResponseDto[*dto.LogInRes], error)
+	VerifyUser(ctx context.Context, loginReq *dto.LoginReq) (*dto.ResponseDto[*dto.LogInRes], error)
 	AddSession(ctx context.Context, sessionId string, userId string, userName string, token string) (*dto.ResponseDto[*dto.LogInRes], error)
 }
 
@@ -52,29 +52,21 @@ func (s *authService) UserSignup(ctx context.Context, userReq *dto.UserRequestDt
 	}, nil
 }
 
-// verify mail before log in and get the user id too
-func (s *authService) VerifyMail(ctx context.Context, loginReq *dto.LoginReq) (*dto.ResponseDto[*dto.LogInRes], error) {
-	// mail
-	email := loginReq.Email
+// user name and password login
+func (s *authService) VerifyUser(ctx context.Context, logInReq *dto.LoginReq) (*dto.ResponseDto[*dto.LogInRes], error) {
 
-	// to verify the mail
-	res, err := s.userRepo.VerifyMail(ctx, email)
+	res, err := s.userRepo.VerifyUser(ctx, logInReq.UserName, logInReq.Password)
 	if err != nil {
-		s.logger.Error(err.Error())
 		return &dto.ResponseDto[*dto.LogInRes]{
-			Status:    "Error",
-			Error:     err.Error(),
-			ResultObj: nil,
+			Error: err.Error(),
 		}, err
 	}
 
-	// if you get the user
 	return &dto.ResponseDto[*dto.LogInRes]{
 		Status:  "Success",
-		Message: "User exists",
+		Message: "User Existed",
 		ResultObj: &dto.LogInRes{
-			UserId:   res.UserId,
-			UserName: res.UserName,
+			UserId: res,
 		},
 	}, nil
 }

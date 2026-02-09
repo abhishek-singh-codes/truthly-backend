@@ -13,7 +13,7 @@ import (
 )
 
 type JwtClaims struct {
-	Email     string `json:"email"`
+	UserName  string `json:"userName"`
 	UserId    string `json:"userId"`
 	SessionId string `json:"sessionId"`
 
@@ -41,14 +41,14 @@ func GetNewAuthToken(logger *slog.Logger, userSessionRepo repository.UserSession
 }
 
 // Generate jwt token
-func (at *AuthToken) GenerateJwtToken(email string, userId string) (string, string, error) {
+func (at *AuthToken) GenerateJwtToken(userName string, userId string) (string, string, error) {
 	sessionId := uuid.New().String()
 	if sessionId == "" {
 		at.logger.Error("faild to generate the session Id")
 		return "", "", errors.New("faild to generate the session Id")
 	}
 	claims := JwtClaims{
-		Email:     email,
+		UserName:  userName,
 		UserId:    userId,
 		SessionId: sessionId,
 
