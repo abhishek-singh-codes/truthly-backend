@@ -18,6 +18,7 @@ func RegisterAll(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger, clie
 	registerAuth(router, db, logger)
 	registerInteraction(router, db, logger)
 	registerUser(router, db, logger)
+	registerProfile(router, db, logger)
 }
 
 // post
@@ -128,4 +129,23 @@ func registerUser(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
 	userController := controller.GetNewUserController(userService)
 
 	GetNewUserRoutes(userController, authToken).RegisterRoutes(router)
+}
+
+// profile
+func registerProfile(router *gin.RouterGroup, db *gorm.DB, logger *slog.Logger) {
+	// repo
+	userRepo := repository.GetUserRepo(logger, db)
+	imageRepo := repository.GetImageRepo(db, logger)
+	userSessionRepo := repository.GetNewUserSessionRepo(logger, db)
+
+	// service
+	profileService := service.GetNewProfileService(logger, imageRepo, userRepo)
+
+	//token
+	authToken := auth.GetNewAuthToken(logger, userSessionRepo)
+
+	//controller
+	profileController := controller.GetNewProfileController(logger, profileService)
+
+	GetNewProfileRoutes(profileController, authToken).RegisterRoutes(router)
 }
