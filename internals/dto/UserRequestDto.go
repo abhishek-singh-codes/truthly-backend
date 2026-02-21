@@ -15,13 +15,13 @@ type UserResponseDto struct {
 }
 
 type UserDetailsForHome struct {
-	FirstName string `json:"firstName,omitempty"`
-	LastName  string `json:"lastName,omitempty"`
-	UserName  string `json:"userName,omitempty"`
+	FirstName *string `json:"firstName,omitempty"`
+	LastName  *string `json:"lastName,omitempty"`
+	UserName  string  `json:"userName,omitempty"`
 
-	City    string `json:"city,omitempty"`
-	State   string `json:"state,omitempty"`
-	Country string `json:"country,omitempty"`
+	City    *string `json:"city,omitempty"`
+	State   *string `json:"state,omitempty"`
+	Country *string `json:"country,omitempty"`
 }
 
 // DTO → Model
