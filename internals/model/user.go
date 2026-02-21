@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	UserId uuid.UUID `gorm:"column:UserId;type:binary(16);primaryKey"`
+	UserId string `gorm:"column:UserId;type:binary(16);primaryKey"`
 
 	UserName string `gorm:"column:UserName;not null"`
 
@@ -25,7 +25,7 @@ type User struct {
 	Address *string `gorm:"column:Address;type:text"`
 
 	Email        *string `gorm:"column:Email;uniqueIndex"`
-	Password     string `gorm:"column:Password;"` // hash stored
+	Password     string  `gorm:"column:Password;"` // hash stored
 	MobileNumber *string `gorm:"column:MobileNumber;uniqueIndex"`
 
 	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
@@ -37,12 +37,12 @@ func (User) TableName() string {
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
-	if u.UserId == uuid.Nil {
+	if u.UserId == "" {
 		id, err := uuid.NewV7()
 		if err != nil {
 			return err
 		}
-		u.UserId = id
+		u.UserId = id.String()
 	}
 	return nil
 }
