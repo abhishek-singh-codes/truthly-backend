@@ -65,7 +65,7 @@ func (ur *userRepository) VerifyUser(ctx context.Context, userName string, passw
 	}
 
 	// success → return userId
-	return user.UserId, nil
+	return user.UserId.String(), nil
 }
 
 // Get user details by user id to show on home page

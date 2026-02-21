@@ -47,7 +47,7 @@ func (s *authService) UserSignup(ctx context.Context, userReq *dto.UserRequestDt
 		Status:  "success",
 		Message: "User created",
 		ResultObj: &dto.LogInRes{
-			UserId: savedUser.UserId,
+			UserId: savedUser.UserId.String(),
 		},
 	}, nil
 }
