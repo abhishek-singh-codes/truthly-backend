@@ -31,7 +31,11 @@ func (Image) TableName() string {
 
 func (i *Image) BeforeCreate(tx *gorm.DB) (err error) {
 	if i.ImageId == "" {
-		i.ImageId = uuid.New().String()
+		id, err := uuid.NewV7()
+		if err != nil {
+			return err
+		}
+		i.ImageId = id.String()
 	}
 	return
 }

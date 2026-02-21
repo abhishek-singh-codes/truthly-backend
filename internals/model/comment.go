@@ -31,7 +31,11 @@ func (Commemts) TableName() string {
 
 func (c *Commemts) BeforeCreate(tx *gorm.DB) (err error) {
 	if c.CommentId == "" {
-		c.CommentId = uuid.New().String()
+		id, err := uuid.NewV7()
+		if err != nil {
+			return err
+		}
+		c.CommentId = id.String()
 	}
 	return
 }

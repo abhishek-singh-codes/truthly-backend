@@ -23,7 +23,11 @@ func (ImageUserActivity) TableName() string {
 
 func (i *ImageUserActivity) BeforeCreate(tx *gorm.DB) (err error) {
 	if i.ID == "" {
-		i.ID = uuid.New().String()
+		id, err := uuid.NewV7()
+		if err != nil {
+			return err
+		}
+		i.ID = id.String()
 	}
 	return
 }

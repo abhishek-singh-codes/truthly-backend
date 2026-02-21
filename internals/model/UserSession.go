@@ -23,7 +23,11 @@ func (UserSession) TableName() string {
 
 func (u *UserSession) BeforeCreate(tx *gorm.DB) (err error) {
 	if u.Id == "" {
-		u.Id = uuid.New().String()
+		id, err := uuid.NewV7()
+		if err != nil {
+			return err
+		}
+		u.Id = id.String()
 	}
 	return nil
 }

@@ -31,7 +31,11 @@ func (Analytic) TableName() string {
 
 func (a *Analytic) BeforeCreate(tx *gorm.DB) (err error) {
 	if a.AnalyticId == "" {
-		a.AnalyticId = uuid.New().String()
+		id, err := uuid.NewV7()
+		if err != nil {
+			return err
+		}
+		a.AnalyticId = id.String()
 	}
 	return
 }

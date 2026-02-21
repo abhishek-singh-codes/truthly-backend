@@ -30,7 +30,11 @@ func (Description) TableName() string {
 
 func (d *Description) BeforeCreate(tx *gorm.DB) (err error) {
 	if d.DescriptionId == "" {
-		d.DescriptionId = uuid.New().String()
+		id, err := uuid.NewV7()
+		if err != nil {
+			return err
+		}
+		d.DescriptionId = id.String()
 	}
 	return
 }

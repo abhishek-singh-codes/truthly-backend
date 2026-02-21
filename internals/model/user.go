@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	UserId string `gorm:"column:UserId;type:binary(16);primaryKey"`
+	UserId string `gorm:"column:UserId;primaryKey"`
 
 	UserName string `gorm:"column:UserName;not null"`
 
