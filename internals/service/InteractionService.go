@@ -8,7 +8,7 @@ import (
 
 type InteractionService interface {
 	LikeImage(ctx context.Context, userId, imageId string) error
-	AddComment(ctx context.Context, userId, imageID, text string) error
+	AddComment(ctx context.Context, userId, imageID string, text *string) error
 
 	UnlikeImage(
 		ctx context.Context,
@@ -56,7 +56,7 @@ func (s *interactionService) UnlikeImage(
 	return nil
 }
 
-func (s *interactionService) AddComment(ctx context.Context, userId, imageId, text string) error {
+func (s *interactionService) AddComment(ctx context.Context, userId, imageId string, text *string) error {
 
 	// 1. Update in the db
 	err := s.interactionRepo.AddComment(ctx, userId, imageId, text)

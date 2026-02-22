@@ -13,8 +13,8 @@ type ImageUserActivity struct {
 	ImageId   string    `gorm:"column:ImageID"`
 	IsLike    bool      `gorm:"column:IsLike"`
 	IsComment bool      `gorm:"column:IsComment"`
-	CreatedAt time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
 }
 
 func (ImageUserActivity) TableName() string {

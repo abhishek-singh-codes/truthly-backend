@@ -61,7 +61,7 @@ func (c *InteractionController) LikeImage(ctx *gin.Context) {
 
 // POST /api/v1/interactions/images/:imageId/comments
 type addCommentReq struct {
-	Comment string `json:"comment"`
+	Comment *string `json:"comment"`
 }
 
 func (c *InteractionController) AddComment(ctx *gin.Context) {
@@ -93,7 +93,7 @@ func (c *InteractionController) AddComment(ctx *gin.Context) {
 		return
 	}
 
-	if req.Comment == "" {
+	if req.Comment == nil {
 		ctx.JSON(400, gin.H{
 			"error": "comment cannot be empty",
 		})
