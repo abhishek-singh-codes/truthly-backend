@@ -15,14 +15,14 @@ type Analytic struct {
 	DescriptionId string `gorm:"column:DescriptionId"`
 	UserId        string `gorm:"column:UserId"`
 
-	// Initially these field will be 0
-	Like    int `gorm:"column:LikeCount"`
-	Share   int `gorm:"column:ShareCount"`
-	Comment int `gorm:"column:CommentCount"`
+	// Initially these field will be null
+	Like    *int `gorm:"column:LikeCount"`
+	Share   *int `gorm:"column:ShareCount"`
+	Comment *int `gorm:"column:CommentCount"`
 
 	// dates
-	CreatedAt time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
 }
 
 func (Analytic) TableName() string {

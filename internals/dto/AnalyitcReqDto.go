@@ -9,9 +9,9 @@ type AnalyticReqDto struct {
 	DescriptionId string `json:"descriptionId"`
 	UserId        string `json:"userId"`
 
-	Like    int `json:"like"`
-	Share   int `json:"share"`
-	Comment int `json:"comment"`
+	Like    *int `json:"like"`
+	Share   *int `json:"share"`
+	Comment *int `json:"comment"`
 }
 
 func ToAnalyticModel(a *AnalyticReqDto) *model.Analytic {
