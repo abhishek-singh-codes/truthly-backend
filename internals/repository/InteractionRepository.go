@@ -12,7 +12,7 @@ import (
 type InteractionRepository interface {
 	// to incrase the like on image
 	LikeImage(ctx context.Context, userId, imageId string) error
-	AddComment(ctx context.Context, userId, imageId, text string) error
+	AddComment(ctx context.Context, userId, imageId string, text *string) error
 	UnlikeImage(
 		ctx context.Context,
 		userId string,
@@ -141,7 +141,7 @@ func (r *interactionRepository) UnlikeImage(
 	})
 }
 
-func (r *interactionRepository) AddComment(ctx context.Context, userId, imageId, text string) error {
+func (r *interactionRepository) AddComment(ctx context.Context, userId, imageId string, text *string) error {
 	return r.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		//1. Get Analytics row
 		var analytic *model.Analytic

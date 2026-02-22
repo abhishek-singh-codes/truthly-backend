@@ -8,7 +8,7 @@ type CommentReqDto struct {
 	DescriptionId string `json:"descriptionId"`
 	AnalyticId    string `json:"analyticid"`
 
-	Comment string `json:"comment"`
+	Comment *string `json:"comment"`
 }
 
 func ToCommentModel(c *CommentReqDto) *model.Commemts {

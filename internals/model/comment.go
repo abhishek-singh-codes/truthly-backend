@@ -18,11 +18,11 @@ type Commemts struct {
 	AnalyticId    string `gorm:"column:AnalyticId"`
 
 	// initially it will be empty
-	Comment string `gorm:"column:Comment"`
+	Comment *string `gorm:"column:Comment"`
 
 	// dates
-	CreatedAt time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
 }
 
 func (Commemts) TableName() string {
