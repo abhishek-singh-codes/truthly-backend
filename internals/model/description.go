@@ -14,14 +14,14 @@ type Description struct {
 	UserId        string `gorm:"column:UserId"`
 
 	// These details user will post along with image
-	Description string `gorm:"column:Description"`
-	Country     string `gorm:"column:Country"`
-	State       string `gorm:"column:State"`
-	City        string `gorm:"column:City"`
+	Description *string `gorm:"column:Description"`
+	Country     *string `gorm:"column:Country"`
+	State       *string `gorm:"column:State"`
+	City        *string `gorm:"column:City"`
 
 	// dates
-	CreatedAt time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
 }
 
 func (Description) TableName() string {

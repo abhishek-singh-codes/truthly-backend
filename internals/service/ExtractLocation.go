@@ -9,9 +9,9 @@ import (
 )
 
 type ExtractLocation struct {
-	City    string
-	State   string
-	Country string
+	City    *string
+	State   *string
+	Country *string
 	logger  *slog.Logger
 }
 
@@ -26,13 +26,13 @@ Reverse geocoding response structure
 */
 type reverseGeoResponse struct {
 	Address struct {
-		City    string `json:"city"`
-		Town    string `json:"town"`
-		Village string `json:"village"`
-		Suburb  string `json:"suburb"`
-		County  string `json:"county"`
-		State   string `json:"state"`
-		Country string `json:"country"`
+		City    *string `json:"city"`
+		Town    *string `json:"town"`
+		Village *string `json:"village"`
+		Suburb  *string `json:"suburb"`
+		County  *string `json:"county"`
+		State   *string `json:"state"`
+		Country *string `json:"country"`
 	} `json:"address"`
 }
 
@@ -83,18 +83,18 @@ func (e *ExtractLocation) FromLatLong(longitude, latitude float32) (*ExtractLoca
 
 	// 🔑 City resolution priority
 	switch {
-	case addr.City != "":
+	case addr.City != nil:
 		e.City = addr.City
-	case addr.Town != "":
+	case addr.Town != nil:
 		e.City = addr.Town
-	case addr.Village != "":
+	case addr.Village != nil:
 		e.City = addr.Village
-	case addr.Suburb != "":
+	case addr.Suburb != nil:
 		e.City = addr.Suburb
-	case addr.County != "":
+	case addr.County != nil:
 		e.City = addr.County
 	default:
-		e.City = ""
+		e.City = nil
 	}
 
 	e.State = addr.State
