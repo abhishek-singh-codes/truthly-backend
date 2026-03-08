@@ -9,20 +9,22 @@ import (
 
 type Image struct {
 
-	// fk
+	// primary key
 	ImageId string `gorm:"column:ImageId;primaryKey"`
-	UserId  string `gorm:"column:UserId;not null"`
+
+	// foreign key
+	UserId string `gorm:"column:UserId;not null"`
 
 	// s3 bucket image url
-	ImageUrl string `gorm:"column:ImageUrl; not null"`
+	ImageUrl string `gorm:"column:ImageUrl;not null;type:text"`
 
-	// lat long
-	Latitude  float64 `gorm:"column:Latitude; type:decimal(10,8);"`
-	Longitude float64 `gorm:"column:Longitude; type:decimal(11,8);"`
+	// lat long — nullable kyunki user location na de
+	Latitude  *float64 `gorm:"column:Latitude;type:decimal(9,6)"`  // ← (10,8) fix kiya
+	Longitude *float64 `gorm:"column:Longitude;type:decimal(9,6)"` // ← (11,8) fix kiya
 
 	// dates
-	CreatedAt time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt;autoUpdateTime"`
 }
 
 func (Image) TableName() string {

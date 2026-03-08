@@ -157,13 +157,13 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 	)
 
 	// call the geo location repo for adding data into tail38
-	if postReq.Latitude != 0 && postReq.Longitude != 0 {
+	if postReq.Latitude != nil && postReq.Longitude != nil {
 
 		err := s.geoRepository.SaveImageLocation(
 			ctx,
 			imgRes.ImageId,
-			postReq.Longitude,
-			postReq.Latitude,
+			*postReq.Longitude,
+			*postReq.Latitude,
 		)
 
 		// this is blocking code
