@@ -116,8 +116,7 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 	// 4. Analytic like, share, comment initially set 0
 
 	analytic := &model.Analytic{
-		ImageId:       descRes.ImageId,
-		DescriptionId: descRes.DescriptionId,
+		ImageId: descRes.ImageId,
 		// other field will be zero
 	}
 
@@ -133,10 +132,8 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 
 	// 5. Comment initally nothing
 	comment := &model.Commemts{
-		UserId:        analyticRes.UserId,
-		ImageId:       analyticRes.ImageId,
-		DescriptionId: analyticRes.DescriptionId,
-		AnalyticId:    analyticRes.AnalyticId,
+		ImageId:    analyticRes.ImageId,
+		AnalyticId: analyticRes.AnalyticId,
 	}
 
 	_, err = s.commentRepo.InsertComment(ctx, comment)

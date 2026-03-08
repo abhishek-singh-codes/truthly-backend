@@ -159,9 +159,8 @@ func (r *interactionRepository) AddComment(ctx context.Context, userId, imageId 
 			UserId:  userId,
 			ImageId: imageId,
 
-			DescriptionId: analytic.DescriptionId,
-			AnalyticId:    analytic.AnalyticId,
-			Comment:       text,
+			AnalyticId: analytic.AnalyticId,
+			Comment:    text,
 		}
 
 		if err := tx.Create(comment).Error; err != nil {

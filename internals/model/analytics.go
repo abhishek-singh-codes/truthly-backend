@@ -8,21 +8,20 @@ import (
 )
 
 type Analytic struct {
+	// primary key
+	AnalyticId string `gorm:"column:AnalyticId;primaryKey"`
 
-	// fk
-	AnalyticId    string `gorm:"column:AnalyticId; primaryKey"`
-	ImageId       string `gorm:"column:ImageId"`
-	DescriptionId string `gorm:"column:DescriptionId"`
-	UserId        string `gorm:"column:UserId"`
+	// foreign key
+	ImageId string `gorm:"column:ImageId;not null"`
 
-	// Initially these field will be null
-	Like    *int `gorm:"column:LikeCount"`
-	Share   *int `gorm:"column:ShareCount"`
-	Comment *int `gorm:"column:CommentCount"`
+	// counts — default 0, NULL nahi
+	LikeCount    int `gorm:"column:LikeCount;default:0"`
+	ShareCount   int `gorm:"column:ShareCount;default:0"`
+	CommentCount int `gorm:"column:CommentCount;default:0"`
 
 	// dates
-	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt;autoUpdateTime"`
 }
 
 func (Analytic) TableName() string {
