@@ -16,7 +16,7 @@ type Comment struct { // ← typo fix kiya "Commemts" → "Comment"
 	UserId  string `gorm:"column:UserId;not null"`
 
 	// content — "Commet" schema ka column name hai (typo DB mein hai)
-	Comment *string `gorm:"column:Commet;type:text"`
+	Comment *string `gorm:"column:Comment;type:text"`
 
 	// dates
 	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`

@@ -26,7 +26,7 @@ type Description struct {
 }
 
 func (Description) TableName() string {
-	return "Description"
+	return "Descriptions"
 }
 
 func (d *Description) BeforeCreate(tx *gorm.DB) (err error) {

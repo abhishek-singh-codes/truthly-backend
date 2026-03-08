@@ -133,6 +133,7 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 	// 5. Comment initally nothing
 	comment := &model.Comment{
 		ImageId: analyticRes.ImageId,
+		UserId:  userId,
 	}
 
 	_, err = s.commentRepo.InsertComment(ctx, comment)
