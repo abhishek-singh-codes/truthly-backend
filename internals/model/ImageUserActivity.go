@@ -8,13 +8,20 @@ import (
 )
 
 type ImageUserActivity struct {
-	ID        string    `gorm:"column:ID"`
-	UserId    string    `gorm:"column:UserID"`
-	ImageId   string    `gorm:"column:ImageID"`
-	IsLike    bool      `gorm:"column:IsLike"`
-	IsComment bool      `gorm:"column:IsComment"`
-	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	// primary key
+	ID string `gorm:"column:ID;primaryKey"`
+
+	// foreign keys
+	ImageId string `gorm:"column:ImageID;not null"`
+	UserId  string `gorm:"column:UserID;not null"`
+
+	// activity — tinyint, default false
+	IsLike    bool `gorm:"column:IsLike;default:0"`
+	IsComment bool `gorm:"column:IsComment;default:0"`
+
+	// dates
+	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt;autoUpdateTime"`
 }
 
 func (ImageUserActivity) TableName() string {
