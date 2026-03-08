@@ -8,13 +8,20 @@ import (
 )
 
 type UserSession struct {
-	Id        string    `gorm:"column:Id"`
-	UserId    string    `gorm:"column:UserId"`
-	UserName  string    `gorm:"column:UserName"`
-	SessionId string    `gorm:"column:SessionId"`
-	Status    string    `gorm:"column:Status"`
-	CreatedAt time.Time `gorm:"column:CreatedAt"`
-	ExpiredAt time.Time `gorm:"column:ExpiredAt"`
+	// primary key
+	Id string `gorm:"column:Id;primaryKey"`
+
+	// user info
+	UserId   string `gorm:"column:UserId;not null"`
+	UserName string `gorm:"column:UserName;not null"`
+
+	// session
+	SessionId string `gorm:"column:SessionId;not null"`
+	Status    string `gorm:"column:Status;not null"`
+
+	// dates
+	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
+	ExpiredAt *time.Time `gorm:"column:ExpiredAt"` // ← nullable, session expire na hua ho
 }
 
 func (UserSession) TableName() string {

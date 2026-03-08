@@ -74,13 +74,16 @@ func (s *authService) VerifyUser(ctx context.Context, logInReq *dto.LoginReq) (*
 // Add session
 func (s *authService) AddSession(ctx context.Context, sessionId string, userId string, userName string, token string) (*dto.ResponseDto[*dto.LogInRes], error) {
 	// data ---> model
+	now := time.Now()
+	expired := time.Now().Add(24 * time.Hour)
+
 	userSession := model.UserSession{
 		UserId:    userId,
 		SessionId: sessionId,
 		UserName:  userName,
 		Status:    "ACTIVE",
-		CreatedAt: time.Now(),
-		ExpiredAt: time.Now().Add(24 * time.Hour),
+		CreatedAt: &now,
+		ExpiredAt: &expired,
 	}
 	// old session Id ko expired mark kardo
 	err := s.userSessionRepo.ExpireLastActiveSession(ctx, userId)
