@@ -155,11 +155,10 @@ func (fr *feedRepository) GetFeedItemsByImageIds(
 			COALESCE(iua.IsLike, false)     AS IsLike,
 			COALESCE(iua.IsComment, false) AS IsComment
 		FROM Images i
-		LEFT JOIN Users u ON u.UserId = i.UserId
-		LEFT JOIN Descriptions d ON d.ImageId = i.ImageId
-		LEFT JOIN Analytics a ON a.ImageId = i.ImageId
-		LEFT JOIN ImageUserActivity iua 
-		       ON iua.ImageID = i.ImageId AND iua.UserID = ?
+			LEFT JOIN Users u ON u.UserId = i.UserId
+			LEFT JOIN Descriptions d ON d.ImageId = i.ImageId
+			LEFT JOIN Analytics a ON a.ImageId = i.ImageId
+			LEFT JOIN ImageUserActivity iua ON iua.ImageID = i.ImageId AND iua.UserID = ?
 		WHERE i.ImageId IN (?)
 	`
 
