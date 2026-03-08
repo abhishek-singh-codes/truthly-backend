@@ -3,9 +3,7 @@ package dto
 import "truthly/internals/model"
 
 type DescriptionReqDto struct {
-	ImageId string `json:"imageId"`
-	UserId  string `json:"userId"`
-
+	ImageId     string  `json:"imageId"`
 	Description *string `json:"description"`
 	Country     *string `json:"country"`
 	State       *string `json:"state"`
@@ -15,7 +13,6 @@ type DescriptionReqDto struct {
 func ToDescriptionModel(d *DescriptionReqDto) *model.Description {
 	return &model.Description{
 		ImageId:     d.ImageId,
-		UserId:      d.UserId,
 		Description: d.Description,
 		Country:     d.Country,
 		State:       d.State,

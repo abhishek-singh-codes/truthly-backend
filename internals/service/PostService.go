@@ -96,7 +96,6 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 
 	description := &model.Description{
 		ImageId: imgRes.ImageId,
-		UserId:  imgRes.UserId,
 
 		Description: postReq.Description,
 		Country:     postReq.Country,
@@ -119,7 +118,6 @@ func (s *postService) UploadPost(ctx context.Context, postReq *dto.PostRequestDt
 	analytic := &model.Analytic{
 		ImageId:       descRes.ImageId,
 		DescriptionId: descRes.DescriptionId,
-		UserId:        descRes.UserId,
 		// other field will be zero
 	}
 

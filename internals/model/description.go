@@ -8,24 +8,25 @@ import (
 )
 
 type Description struct {
-	// fk
-	DescriptionId string `gorm:"column:DescriptionId; primaryKey"`
-	ImageId       string `gorm:"column:ImageId"`
-	UserId        string `gorm:"column:UserId"`
+	// primary key
+	DescriptionId string `gorm:"column:DescriptionId;primaryKey"`
 
-	// These details user will post along with image
-	Description *string `gorm:"column:Description"`
+	// foreign key
+	ImageId string `gorm:"column:ImageId;not null"`
+
+	// content
+	Description *string `gorm:"column:Description;type:text"`
 	Country     *string `gorm:"column:Country"`
 	State       *string `gorm:"column:State"`
 	City        *string `gorm:"column:City"`
 
 	// dates
-	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt;autoUpdateTime"`
 }
 
 func (Description) TableName() string {
-	return "Descriptions"
+	return "Description"
 }
 
 func (d *Description) BeforeCreate(tx *gorm.DB) (err error) {

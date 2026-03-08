@@ -32,13 +32,13 @@ func (h *PostImageController) PostImage(ctx *gin.Context) {
 	}
 
 	//  Reverse geocode only if lat/lng present
-	if postReqDto.Latitude != 0 && postReqDto.Longitude != 0 {
+	if postReqDto.Latitude != nil && postReqDto.Longitude != nil {
 
 		extractor := service.GetNewExtractLocation(h.logger)
 
 		location, err := extractor.FromLatLong(
-			float32(postReqDto.Longitude),
-			float32(postReqDto.Latitude),
+			float32(*postReqDto.Longitude),
+			float32(*postReqDto.Latitude),
 		)
 
 		h.logger.Info("Check", "location", location)
