@@ -7,29 +7,27 @@ import (
 	"gorm.io/gorm"
 )
 
-type Commemts struct {
-	// pk
-	CommentId string `gorm:"column:CommentId; primaryKey"`
+type Comment struct { // ← typo fix kiya "Commemts" → "Comment"
+	// primary key
+	CommentId string `gorm:"column:CommentId;primaryKey"`
 
-	// fk
-	UserId        string `gorm:"column:UserId"`
-	ImageId       string `gorm:"column:ImageId"`
-	DescriptionId string `gorm:"column:DescriptionId"`
-	AnalyticId    string `gorm:"column:AnalyticId"`
+	// foreign keys
+	ImageId string `gorm:"column:ImageId;not null"`
+	UserId  string `gorm:"column:UserId;not null"`
 
-	// initially it will be empty
-	Comment *string `gorm:"column:Comment"`
+	// content — "Commet" schema ka column name hai (typo DB mein hai)
+	Comment *string `gorm:"column:Commet;type:text"`
 
 	// dates
-	CreatedAt *time.Time `gorm:"column:CreatedAt; autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"column:UpdatedAt; autoUpdateTime"`
+	CreatedAt *time.Time `gorm:"column:CreatedAt;autoCreateTime"`
+	UpdatedAt *time.Time `gorm:"column:UpdatedAt;autoUpdateTime"`
 }
 
-func (Commemts) TableName() string {
+func (Comment) TableName() string {
 	return "Comments"
 }
 
-func (c *Commemts) BeforeCreate(tx *gorm.DB) (err error) {
+func (c *Comment) BeforeCreate(tx *gorm.DB) (err error) {
 	if c.CommentId == "" {
 		id, err := uuid.NewV7()
 		if err != nil {

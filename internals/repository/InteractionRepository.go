@@ -155,12 +155,11 @@ func (r *interactionRepository) AddComment(ctx context.Context, userId, imageId 
 		}
 
 		// 2. Add comment
-		comment := &model.Commemts{
+		comment := &model.Comment{
 			UserId:  userId,
 			ImageId: imageId,
 
-			AnalyticId: analytic.AnalyticId,
-			Comment:    text,
+			Comment: text,
 		}
 
 		if err := tx.Create(comment).Error; err != nil {

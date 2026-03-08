@@ -11,12 +11,10 @@ type CommentReqDto struct {
 	Comment *string `json:"comment"`
 }
 
-func ToCommentModel(c *CommentReqDto) *model.Commemts {
-	return &model.Commemts{
-		UserId:        c.UserId,
-		ImageId:       c.ImageId,
-		DescriptionId: c.DescriptionId,
-		AnalyticId:    c.AnalyticId,
-		Comment:       c.Comment,
+func ToCommentModel(c *CommentReqDto) *model.Comment {
+	return &model.Comment{
+		UserId:  c.UserId,
+		ImageId: c.ImageId,
+		Comment: c.Comment,
 	}
 }

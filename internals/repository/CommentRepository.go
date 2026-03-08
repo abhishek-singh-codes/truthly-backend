@@ -9,7 +9,7 @@ import (
 )
 
 type CommentRepository interface {
-	InsertComment(ctx context.Context, comment *model.Commemts) (*model.Commemts, error)
+	InsertComment(ctx context.Context, comment *model.Comment) (*model.Comment, error)
 }
 
 type commentRepository struct {
@@ -25,7 +25,7 @@ func GetCommentRepository(Db *gorm.DB, logger *slog.Logger) CommentRepository {
 	}
 }
 
-func (c *commentRepository) InsertComment(ctx context.Context, comment *model.Commemts) (*model.Commemts, error) {
+func (c *commentRepository) InsertComment(ctx context.Context, comment *model.Comment) (*model.Comment, error) {
 	if err := c.Db.WithContext(ctx).Create(comment).Error; err != nil {
 		return nil, err
 	}
